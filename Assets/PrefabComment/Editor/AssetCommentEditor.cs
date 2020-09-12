@@ -3,10 +3,10 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace PrefabComment
+namespace AssetComment
 {
     [CustomEditor(typeof(Transform), true)]
-    public sealed class PrefabCommentEditor : Editor
+    public sealed class AssetCommentEditor : Editor
     {
         #region Constants
 
@@ -22,9 +22,9 @@ namespace PrefabComment
 
         #region Variables
 
-        private static PrefabComment _prefabComment;
+        private static AssetComment _assetComment;
 
-        private static PrefabCommentWindow _commentWindow;
+        private static AssetCommentWindow _commentWindow;
 
         private static bool _isDispSceneView;
 
@@ -35,8 +35,8 @@ namespace PrefabComment
         [MenuItem(CreateWindowMenuPath)]
         private static void CreateCommentWindow()
         {
-            _commentWindow = PrefabCommentWindow.GetWindow();
-            _commentWindow.SetAssetComment(_prefabComment);
+            _commentWindow = AssetCommentWindow.GetWindow();
+            _commentWindow.SetAssetComment(_assetComment);
         }
         
         [MenuItem(DispSceneViewMenuPath)]
@@ -50,25 +50,28 @@ namespace PrefabComment
 
         public void Awake()
         {
-            if (_prefabComment == null)
+            if (_assetComment == null)
             {
-                _prefabComment = new PrefabComment();
-                _prefabComment.onChageComment += SceneView.RepaintAll;
+                _assetComment = new AssetComment();
+                _assetComment.onChageComment += SceneView.RepaintAll;
             }
             
-            if (PrefabCommentWindow.HasOpenInstances<PrefabCommentWindow>())
+            if (AssetCommentWindow.HasOpenInstances<AssetCommentWindow>())
             {
                 CreateCommentWindow();
             }
 
             _isDispSceneView = EditorPrefs.GetBool(DispFlagSaveKey, false);
-            _prefabComment.Load(target);
+            _assetComment.Load(target);
         }
 
         private void OnDestroy()
         {
-            _prefabComment.Save();
-            _prefabComment.DisposeComment();
+            if (_assetComment != null)
+            {
+                _assetComment.Save();
+                _assetComment.DisposeComment();
+            }
         }
 
         private void OnSceneGUI()
@@ -78,7 +81,7 @@ namespace PrefabComment
                 return;
             }
 
-            if (_prefabComment == null || !_prefabComment.IsInitialized)
+            if (_assetComment == null || !_assetComment.IsInitialized)
             {
                 return;
             }
@@ -97,7 +100,7 @@ namespace PrefabComment
                 InputFieldSize.x,
                 InputFieldSize.y);
 
-            _prefabComment.Comment = GUI.TextArea(inputFieldRect, _prefabComment.Comment);
+            _assetComment.Comment = GUI.TextArea(inputFieldRect, _assetComment.Comment);
             
             Handles.EndGUI();
         }

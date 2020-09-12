@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
 
-namespace PrefabComment
+namespace AssetComment
 {
     public static class FirebaseUtility
     {

@@ -1,4 +1,4 @@
-﻿namespace PrefabComment
+﻿namespace AssetComment
 {
     public static class FirebaseConfig
     {

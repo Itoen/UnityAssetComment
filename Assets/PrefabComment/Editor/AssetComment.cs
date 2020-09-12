@@ -1,19 +1,24 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace PrefabComment
+namespace AssetComment
 {
     public sealed class CommentData
     {
         public string comment;
     }
     
-    public sealed class PrefabComment
+    public sealed class AssetComment
     {
+        #region Constants
+
+        private static PropertyInfo inspectorModePropertyInfo= typeof(SerializedObject).GetProperty("inspectorMode", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        #endregion
+        
         #region Variables
         
         private string guid;
@@ -69,13 +74,32 @@ namespace PrefabComment
 
                 if (sourcePrefab == null)
                 {
-                    return;
+                    var scenePath = AssetDatabase.GetAssetOrScenePath(targetTransform);
+                    this.guid = AssetDatabase.AssetPathToGUID(scenePath);
+                    
+                    var serializedObject = new SerializedObject(targetTransform.gameObject);
+                    var tempInspectorMode = inspectorModePropertyInfo.GetValue(serializedObject);
+                    
+                    inspectorModePropertyInfo.SetValue(serializedObject, InspectorMode.Debug);
+                    
+                    var localIdProperty = serializedObject.FindProperty("m_LocalIdentfierInFile");
+                    this.localId = localIdProperty.intValue;
+                    
+                    inspectorModePropertyInfo.SetValue(serializedObject, tempInspectorMode);
+
+                    if (string.IsNullOrEmpty(this.guid) || this.localId <= 0)
+                    {
+                        this.DisposeComment();
+                        return;
+                    }
                 }
-                
-                if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(sourcePrefab, out this.guid,
-                    out this.localId))
+                else
                 {
-                    return;
+                    if (!AssetDatabase.TryGetGUIDAndLocalFileIdentifier(sourcePrefab, out this.guid,
+                        out this.localId))
+                    {
+                        return;
+                    }
                 }
             }
 
