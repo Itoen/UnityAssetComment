@@ -4,6 +4,6 @@
     {
         public const string FirebaseRealtimeDatabaseURL = "Realtime Database URL";
 
-        public const string DatabaseSecret = "ServiceAccount Secret";
+        public const string DatabaseSecret = "Database Secret";
     }
 }
