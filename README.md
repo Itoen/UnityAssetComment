@@ -1,5 +1,5 @@
 # UnityAssetComment
-同一プロジェクト内で同期するアセットコメント機能<br>
+サーバ介して同一プロジェクト内で同期するアセットコメント機能<br>
  <br>
 コメントは 
 - プレハブ(バリアントは別プレハブ扱い)
@@ -10,7 +10,7 @@
 ## Demo
 ![screenCapture](https://user-images.githubusercontent.com/17733911/93001462-0f48f700-f56a-11ea-9bed-c5f40109c8b1.gif)
 
-## Install
+## Setting
 [Firebase](https://console.firebase.google.com/)でプロジェクトを作成し、<br>
 `AssetComment/Editor/FirebaseConfig.cs`にRealtime DatabaseのURLとシークレットを設定します。<br>
 <br>
